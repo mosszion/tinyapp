@@ -1,0 +1,24 @@
+//get the express library
+const express = require("express");
+
+// assign express variable and port number
+const app = express();
+const PORT = 8080;
+
+// an object with short keys to long url values
+const urlDatabase = {
+  b2xVn2: "http://www.lighthouselabs.ca",
+  "9sm5xK": "http://www.google.com",
+};
+
+// when a request is made , responde with Hello!
+app.get("/",(req,res) => {
+  res.send("Hello!");
+});
+
+//our app server start listening at port 8080
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}!`);
+})
+
+
