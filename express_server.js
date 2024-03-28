@@ -5,6 +5,8 @@ const express = require("express");
 const app = express();
 const PORT = 8080;
 
+app.set("view engine", "ejs");
+
 // an object with short keys to long url values
 const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
