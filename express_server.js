@@ -16,6 +16,11 @@ app.get("/",(req,res) => {
   res.send("Hello!");
 });
 
+//additional endpoints for api usage
+app.get("/urls.json", (req,res) => {
+  res.json(urlDatabase);
+})
+
 //our app server start listening at port 8080
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
