@@ -10,6 +10,13 @@ app.set("view engine", "ejs");
 //add middleware urlencoded 
 app.use(express.urlencoded({extended: true}));
 
+//random short URL id generator function
+function generateRandomString() {
+  const randomid = Math.random().toString(36).substring(2, 8); 
+
+}
+
+
 // an object with short keys to long url values
 const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
@@ -38,6 +45,7 @@ app.get("/urls/new", (req,res) => {
 app.post("/urls", (req,res) => {
   console.log(req.body);
   res.send("ok");
+  generateRandomString();
 })
 
 
