@@ -12,8 +12,8 @@ app.use(express.urlencoded({extended: true}));
 
 //random short URL id generator function
 function generateRandomString() {
-  const randomid = Math.random().toString(36).substring(2, 8); 
-  return randomid;
+  const randomid = Math.random().toString(36).substring(2, 8); //gets randomly generated 6 characters and assign it to randomID
+  return randomid; //
 
 }
 
