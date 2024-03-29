@@ -18,13 +18,13 @@ app.get("/",(req,res) => {
   res.send("Hello!");
 });
 
-// adding first route
+// adding /urls route
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
-// adding second route
+// adding /urls/:id route
 app.get("/urls/:id", (req, res) => {
   // const longURL = urlDatabase[req.params.id];
   const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id]};
