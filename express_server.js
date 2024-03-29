@@ -34,6 +34,14 @@ app.get("/urls/new", (req,res) => {
 })
 
 
+//adding post route
+app.post("/urls", (req,res) => {
+  console.log(req.body);
+  res.send("ok");
+})
+
+
+
 // adding /urls/:id route
 // creates a new templateVars which holds Id from the user 
 // ...plus value of the id
