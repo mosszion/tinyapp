@@ -56,7 +56,7 @@ app.post("/urls", (req,res) => {
   urlDatabase[id] = longURL;
 
   //now redirect page to /urls/:id. 
-  res.redirect(`/urls/:${id}`);
+  res.redirect(`/urls/${id}`);
 })
 
 app.get("/u/:id", (req, res) => {
