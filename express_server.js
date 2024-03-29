@@ -25,6 +25,12 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+//adding /urls/new route
+app.get("/urls/new", (req,res) => {
+  res.render("urls_new");
+})
+
+
 // adding /urls/:id route
 // creates a new templateVars which holds Id from the user 
 // ...plus value of the id
