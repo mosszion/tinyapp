@@ -13,6 +13,7 @@ app.use(express.urlencoded({extended: true}));
 //random short URL id generator function
 function generateRandomString() {
   const randomid = Math.random().toString(36).substring(2, 8); 
+  return randomid;
 
 }
 
@@ -22,7 +23,7 @@ const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
 };
-
+console.log(urlDatabase);
 // when a request is made , responde with Hello!
 app.get("/",(req,res) => {
   res.send("Hello!");
@@ -44,8 +45,17 @@ app.get("/urls/new", (req,res) => {
 //adding post route
 app.post("/urls", (req,res) => {
   console.log(req.body);
-  res.send("ok");
-  generateRandomString();
+  // res.send("ok");
+
+  //getting the longURL from the post
+  const longURL = req.body.longURL
+
+  //generate and assign the random id to th longURL
+  const id = generateRandomString();
+   
+  //update our urlDatabase
+
+  urlDatabase[id] = longURL;
 })
 
 
