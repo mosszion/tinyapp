@@ -47,7 +47,7 @@ app.post("/urls", (req,res) => {
 
   //getting the longURL from the post
   if (!req.body.longURL){
-    res.send("Please Enter Valid URL!!!!")
+    res.status(400).send("Please Enter Valid URL!!!!") 
   }
   const longURL = req.body.longURL
 
