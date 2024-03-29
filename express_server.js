@@ -46,6 +46,9 @@ app.get("/urls/new", (req,res) => {
 app.post("/urls", (req,res) => {
 
   //getting the longURL from the post
+  if (!req.body.longURL){
+    res.send("Please Enter Valid URL!!!!")
+  }
   const longURL = req.body.longURL
 
   //generate and assign the random id to th longURL
