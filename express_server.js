@@ -23,7 +23,7 @@ const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
 };
-console.log(urlDatabase);
+
 // when a request is made , responde with Hello!
 app.get("/",(req,res) => {
   res.send("Hello!");
@@ -44,8 +44,6 @@ app.get("/urls/new", (req,res) => {
 
 //adding post route
 app.post("/urls", (req,res) => {
-  console.log(req.body);
-  // res.send("ok");
 
   //getting the longURL from the post
   const longURL = req.body.longURL
@@ -56,7 +54,16 @@ app.post("/urls", (req,res) => {
   //update our urlDatabase
 
   urlDatabase[id] = longURL;
+
+  //now redirect page to /urls/:id. 
+  res.redirect(`/u/:${id}`);
 })
+
+app.get("/u/:id", (req, res) => {
+  const longURL = urlDatabase[req.params.id];
+  res.redirect(longURL);
+});
+
 
 
 
