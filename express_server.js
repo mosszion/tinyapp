@@ -19,14 +19,16 @@ app.get("/",(req,res) => {
 });
 
 // adding /urls route
+// creates a new variable and assignes the urlDatabase object to it
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
 // adding /urls/:id route
+// creates a new templateVars which holds Id from the user 
+// ...plus value of the id
 app.get("/urls/:id", (req, res) => {
-  // const longURL = urlDatabase[req.params.id];
   const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id]};
   res.render("urls_show", templateVars);
 });
