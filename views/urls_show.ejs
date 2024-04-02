@@ -14,14 +14,25 @@
   <%- include('partials/_header') %>
   <body>
     <div class="card text-center">
+     
       <div class="card-header"></div>
       <div class="card-body">
         <h5 class="card-title">TinyURL for: <a href="#"><%= longURL %></a></h5>
         <p class="card-text">
-          Short URL ID: <a href="/u/<%= id %>"><%= id %></a>
+          Short URL ID: <a href="/u/<%= id %>"><%= id %></a><br>
+
+
         </p>
+       
       </div>
-      <div class="card-footer text-muted"></div>
+      <div class="card-footer text-muted">
+        <h5> Edit </h5>
+        <form method="POST"   action="/urls/<%= id %>">
+          <label > New URL: </label>
+          <input type="text", id="edit" name="edit"> 
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
     </div>
     <!-- Bootstrap JS -->
     <script
