@@ -77,6 +77,15 @@ app.post("/urls/:id/delete",(req,res) => {
   res.redirect("/urls");
   
 })
+//route which updates database if an edit button request is submitted
+app.post("/urls/:id",(req,res) => {
+  const id = req.params.id;
+  const newLongUrl = req.body.edit;
+  urlDatabase.id = newLongUrl;
+  
+  res.redirect("/urls");
+  
+})
 // adding /urls/:id route
 
 app.get("/u/:id", (req, res) => {
