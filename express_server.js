@@ -20,7 +20,7 @@ function generateRandomString() {
 
 // an object with short keys to long url values
 const urlDatabase = {
-  b2xVn2: "http://www.lighthouselabs.ca",
+  "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
 };
 
@@ -62,21 +62,29 @@ app.post("/urls", (req,res) => {
   res.redirect(`/urls/${id}`);
 })
 
-app.get("/u/:id", (req, res) => {
-  const longURL = urlDatabase[req.params.id];
-  res.redirect(longURL);
-});
 
-
-
-
-// adding /urls/:id route
-// creates a new templateVars which holds Id from the user 
-// ...plus value of the id
 app.get("/urls/:id", (req, res) => {
   const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id]};
   res.render("urls_show", templateVars);
 });
+
+
+
+//route which deletes if a delete button request is submitted
+app.post("/urls/:id/delete",(req,res) => {
+  const id = req.params.id;
+  delete urlDatabase[id];
+  res.redirect("/urls");
+  
+})
+// adding /urls/:id route
+
+app.get("/u/:id", (req, res) => {
+  const longURL = urlDatabase[req.params.id];
+  res.redirect(longURL);
+});
+// creates a new templateVars which holds Id from the user 
+// ...plus value of the id
 
 //additional endpoints for api usage
 app.get("/urls.json", (req,res) => {
