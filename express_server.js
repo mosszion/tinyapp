@@ -48,6 +48,36 @@ function generateRandomString() {
   
 };
 
+//////////////////////////////////////////////////////////////////////////////////////
+///POST route submits Registration values
+///Implemented logic which checks empty strings  and if found returns 400 status code
+///Implemented logic which checks for a registred email and returns 400 status code
+//////////////////////////////////////////////////////////////////////////////////////
+
+app.post("/register",(req,res) => {
+  
+
+  if(req.body.email === "" || req.body.password === ""){
+    res.sendStatus(400)
+  }
+  for( let user in users ) {
+    if(req.body.email === users[user]["email"]) {
+      res.sendStatus(400);
+    }
+  }
+  const id = generateRandomString();
+  const email = req.body.email;
+  const password = req.body.password;
+  
+  const newUser ={
+      id : id,
+    email: email,
+    password: password
+  }
+
+  users[id] = newUser;
+  
+});
 
 /////////////////////////////////////////////////////////////
 ///Get route renders Registration page
