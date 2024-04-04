@@ -5,31 +5,31 @@
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-      href="#"
       integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
       crossorigin="anonymous"
     />
     <title>URL - TinyApp Example</title>
   </head>
-  <%- include('partials/_header') %>
+
   <body>
+    <%- include('partials/_header') %>
+
     <div class="card text-center">
-     
       <div class="card-header"></div>
       <div class="card-body">
-        <h5 class="card-title">TinyURL for: <a href="#"><%= longURL %></a></h5>
+        <h5 class="card-title">TinyURL for: <%= longURL %></h5>
         <p class="card-text">
-          Short URL ID: <a href="/u/<%= id %>"><%= id %></a><br>
-
-
+          Short URL ID: <a href="/u/<%= id %>"><%= id %></a>
+         
         </p>
-       
+        
       </div>
+
       <div class="card-footer text-muted">
-        <h5> Edit </h5>
-        <form method="POST"   action="/urls/<%= id %>">
-          <label > New URL: </label>
-          <input type="text", id="edit" name="edit"> 
+        <h1>Edit</h1>
+        <form method="POST" action = "/urls/<%= id %>">
+          <label for="Edit">New URL:</label>
+          <input type="text" name="longURL">
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
       </div>
