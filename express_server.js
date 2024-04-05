@@ -55,7 +55,7 @@ function getUserByEmail(emailFromPost){
   
   for( let user in users ) {
     if(emailFromPost === users[user]["email"]) {
-      return true;
+      return user;
      
     }
   }
@@ -73,10 +73,12 @@ app.post("/register",(req,res) => {
 
   if(req.body.email === "" || req.body.password === ""){
     res.status(400).send("Please fill the email and password boxes!!!")
+    return;
   }
   if(getUserByEmail(req.body.email)) {
 
     res.status(400).send("This Email already registered for another user.Please enter different email !!!!!!!")
+    return;
   }
 
   const id = generateRandomString();
