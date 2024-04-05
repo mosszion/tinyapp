@@ -62,6 +62,19 @@ function getUserByEmail(emailFromPost){
 
 
 }
+// Function which returns a user if password is registered to users
+
+function getUserByPassword(passwordFromPost){
+  
+  for( let user in users ) {
+    if(passwordFromPost === users[user]["password"]) {
+      return user;
+     
+    }
+  }
+
+
+}
 
 /////////////////////////////////////////////////////////////
 ///Get route renders Login page
@@ -134,8 +147,14 @@ app.post("/logout",(req,res) => {
 /////////////////////////////////////////////////////////////
 
 app.post("/login",(req,res) => {
- 
-  res.redirect("/urls",);
+  if(req.body.email === "" || req.body.password === ""){
+    res.status(400).send("Please fill the email and password boxes!!!")
+    return;
+  }
+  if(getUserByEmail(req.body.email) && getUserByPassword(req.body.password)) {
+    res.redirect("/urls");
+  }
+  res.redirect("/login");
   
 });
 /////////////////////////////////////////////////////////////
