@@ -72,7 +72,7 @@ app.post("/register",(req,res) => {
   
 
   if(req.body.email === "" || req.body.password === ""){
-    res.sendStatus(400)
+    res.status(400).send("Please fill the email and password boxes!!!")
   }
   if(getUserByEmail(req.body.email)) {
 
