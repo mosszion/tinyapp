@@ -17,33 +17,12 @@
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
-    <div class="ml-auto mr-3">
-      <% if (user && user.email) { %>
-        
-        <form method="POST" action="/logout">
-          <label>Logged in as: <%= user.email %>! </label>
-          <button type="submit"  class="btn btn-outline-dark">Logout</button>
-        </form>
-      <% } else { %>
-        <form method="POST" action="/login">
-          <input
-              type="email" 
-              name="email"
-              placeholder="Email"
-              
+      <div class="ml-auto mr-3">
+        <a class="btn btn-outline-dark" href="/login">Login</a>
+        <a class="btn btn-outline-dark" href="/register">Register</a>
+      
 
-              >
-          
-          <button type="submit"
-                  id="login-button"
-                  class="btn btn-outline-dark"
-                 
-          >Login</button>
-
-
-        </form>      <% } %>
-
-    </div>
+      </div>
     </div>
   </nav>
 </header>
