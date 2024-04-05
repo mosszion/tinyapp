@@ -51,38 +51,30 @@ function generateRandomString() {
 
 // Function which returns true if email is registered to users
 
-function getUserByEmail(emailFromPost){
+function getUserByEmail(emailFromPost,passwordFromPost){
   
   for( let user in users ) {
     if(emailFromPost === users[user]["email"]) {
-      return user;
+      if (passwordFromPost === users[user]["password"]){
+        
+        return user;
+      }
+      
      
     }
   }
 
 
 }
-// Function which returns a user if password is registered to users
 
-function getUserByPassword(passwordFromPost){
-  
-  for( let user in users ) {
-    if(passwordFromPost === users[user]["password"]) {
-      return user;
-     
-    }
-  }
-
-
-}
 
 /////////////////////////////////////////////////////////////
 ///Get route renders Login page
 /////////////////////////////////////////////////////////////
 
 app.get("/login",(req,res) => {
- 
-  res.render("login");
+  res.cookie("user_id");
+  res.render("login",{user: users[req.cookies["user_id"]] });
   
 });
 //////////////////////////////////////////////////////////////////////////////////////
@@ -139,7 +131,7 @@ app.get("/register",(req,res) => {
 
 app.post("/logout",(req,res) => {
   res.clearCookie("user_id")
-  res.redirect("/urls",);
+  res.redirect("/login",);
   
 });
 /////////////////////////////////////////////////////////////
@@ -151,7 +143,8 @@ app.post("/login",(req,res) => {
     res.status(400).send("Please fill the email and password boxes!!!")
     return;
   }
-  if(getUserByEmail(req.body.email) && getUserByPassword(req.body.password)) {
+  if(getUserByEmail(req.body.email,req.body.password) ){
+    res.cookie("user_id",users["id"])
     res.redirect("/urls");
   }
   res.redirect("/login");
