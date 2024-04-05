@@ -74,11 +74,11 @@ app.post("/register",(req,res) => {
   if(req.body.email === "" || req.body.password === ""){
     res.sendStatus(400)
   }
-  for( let user in users ) {
-    if(req.body.email === users[user]["email"]) {
-      res.sendStatus(400);
-    }
+  if(getUserByEmail(req.body.email)) {
+
+    res.status(400).send("This Email already registered for another user.Please enter different email !!!!!!!")
   }
+  
   const id = generateRandomString();
   const email = req.body.email;
   const password = req.body.password;
