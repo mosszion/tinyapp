@@ -40,14 +40,28 @@ const users = {
 
 
 /////////////////////////////////////////////////////////////
-/// Aiding Function which generates random ID
+/// Aiding Functions
 /////////////////////////////////////////////////////////////
+/// Function which generates random Id
 function generateRandomString() {
   const randomid = Math.random().toString(36).substring(2, 8); //gets randomly generated 6 characters and assign it to randomID
   return randomid; //
   
 };
 
+// Function which returns true if email is registered to users
+
+function getUserByEmail(emailFromPost){
+  
+  for( let user in users ) {
+    if(emailFromPost === users[user]["email"]) {
+      return true;
+     
+    }
+  }
+
+
+}
 //////////////////////////////////////////////////////////////////////////////////////
 ///POST route submits Registration values
 ///Implemented logic which checks empty strings  and if found returns 400 status code
