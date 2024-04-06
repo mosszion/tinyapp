@@ -62,10 +62,10 @@ function getUserByEmail(emailFromPost){
 }
 // Function which returns true if email is registered to users
 
-function getUserByPassword(passwordFromPost){
+function getUserByEmailByPassword(emailFromPost,passwordFromPost){
   
   for( let user in users ) {
-      if (passwordFromPost === users[user]["password"]){
+      if ((passwordFromPost === users[user]["password"] )&& (emailFromPost === users[user]["email"])){
         return user
       }
   }
@@ -115,7 +115,7 @@ app.post("/register",(req,res) => {
 
   res.cookie("user_id",`${id}`);
 
-  console.log(users);
+  
 
   res.redirect("/urls");
   
@@ -135,9 +135,10 @@ app.get("/register",(req,res) => {
 /////////////////////////////////////////////////////////////
 
 app.post("/logout",(req,res) => {
+
   res.clearCookie("user_id")
 
-  res.redirect("/login",);
+  res.redirect("/login");
   
 });
 /////////////////////////////////////////////////////////////
@@ -149,20 +150,16 @@ app.post("/login",(req,res) => {
     res.status(400).send("Please fill the email and password boxes!!!")
     return;
   }
-  if(req.body.email === "" || req.body.password === ""){
-    res.status(400).send("Please fill the email and password boxes!!!")
-    return;
-  }
+
   
-  let userFoundByEmail = getUserByEmail(req.body.email)
-  let userFoundByPassword = getUserByPassword(req.body.password)
+  let userFoundByEmailPassword = getUserByEmailByPassword(req.body.email,req.body.password)
   
-  if(userFoundByEmail && userFoundByPassword !== null ){
-    res.cookie("user_id",users[userFoundByEmail]["id"])
+  if(userFoundByEmailPassword ){
+    res.cookie("user_id",users[userFoundByEmailPassword]["id"])
     res.redirect("/urls");
   }
 
-  res.redirect("/login");
+  res.status(400).send("Loggin attempt was unsuccessful");
   
 });
 /////////////////////////////////////////////////////////////
