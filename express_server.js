@@ -51,20 +51,23 @@ function generateRandomString() {
 
 // Function which returns true if email is registered to users
 
-function getUserByEmailByPassword(emailFromPost,passwordFromPost){
+function getUserByEmail(emailFromPost){
   
   for( let user in users ) {
     if(emailFromPost === users[user]["email"]) {
-      if (passwordFromPost === users[user]["password"]){
-        
         return user
-      }
-      
-     
     }
   }
+}
+// Function which returns true if email is registered to users
 
-
+function getUserByPassword(passwordFromPost){
+  
+  for( let user in users ) {
+      if (passwordFromPost === users[user]["password"]){
+        return user
+      }
+  }
 }
 
 
@@ -122,7 +125,7 @@ app.post("/register",(req,res) => {
 
 app.get("/register",(req,res) => {
 
-  res.render("register");
+  res.render("register",{user: users[req.cookies["user_id"]]});
   
 });
 /////////////////////////////////////////////////////////////
@@ -144,9 +147,12 @@ app.post("/login",(req,res) => {
     res.status(400).send("Please fill the email and password boxes!!!")
     return;
   }
-  if(getUserByEmailByPassword(req.body.email,req.body.password) ){
-    let user = getUserByEmailByPassword(req.body.email,req.body.password)
-    res.cookie("user_id",users[user]["id"])
+  
+  let userFoundByEmail = getUserByEmail(req.body.email)
+  let userFoundByPassword = getUserByPassword(req.body.password)
+  
+  if(userFoundByEmail && userFoundByPassword){
+    res.cookie("user_id",users[userFoundByPassword]["id"])
     res.redirect("/urls");
   }
   res.redirect("/login");
