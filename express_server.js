@@ -51,13 +51,13 @@ function generateRandomString() {
 
 // Function which returns true if email is registered to users
 
-function getUserByEmail(emailFromPost,passwordFromPost){
+function getUserByEmailByPassword(emailFromPost,passwordFromPost){
   
   for( let user in users ) {
     if(emailFromPost === users[user]["email"]) {
       if (passwordFromPost === users[user]["password"]){
         
-        return user;
+        return user
       }
       
      
@@ -131,6 +131,7 @@ app.get("/register",(req,res) => {
 
 app.post("/logout",(req,res) => {
   res.clearCookie("user_id")
+
   res.redirect("/login",);
   
 });
@@ -143,8 +144,9 @@ app.post("/login",(req,res) => {
     res.status(400).send("Please fill the email and password boxes!!!")
     return;
   }
-  if(getUserByEmail(req.body.email,req.body.password) ){
-    res.cookie("user_id",users["id"])
+  if(getUserByEmailByPassword(req.body.email,req.body.password) ){
+    let user = getUserByEmailByPassword(req.body.email,req.body.password)
+    res.cookie("user_id",users[user]["id"])
     res.redirect("/urls");
   }
   res.redirect("/login");
