@@ -58,6 +58,7 @@ function getUserByEmail(emailFromPost){
         return user
     }
   }
+  return null;
 }
 // Function which returns true if email is registered to users
 
@@ -68,6 +69,7 @@ function getUserByPassword(passwordFromPost){
         return user
       }
   }
+  return null;
 }
 
 
@@ -147,14 +149,19 @@ app.post("/login",(req,res) => {
     res.status(400).send("Please fill the email and password boxes!!!")
     return;
   }
+  if(req.body.email === "" || req.body.password === ""){
+    res.status(400).send("Please fill the email and password boxes!!!")
+    return;
+  }
   
   let userFoundByEmail = getUserByEmail(req.body.email)
   let userFoundByPassword = getUserByPassword(req.body.password)
   
-  if(userFoundByEmail && userFoundByPassword){
-    res.cookie("user_id",users[userFoundByPassword]["id"])
+  if(userFoundByEmail && userFoundByPassword !== null ){
+    res.cookie("user_id",users[userFoundByEmail]["id"])
     res.redirect("/urls");
   }
+
   res.redirect("/login");
   
 });
