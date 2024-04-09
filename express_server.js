@@ -3,6 +3,8 @@
 /////////////////////////////////////////////////////////////
 const express = require("express")
 const cookieParser = require("cookie-parser");
+const bcrypt = require("bcryptjs");
+
 
 const app = express();
 const PORT = 8080;
@@ -39,12 +41,13 @@ const users = {
   userRandomID: {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur",
+    password: bcrypt.hashSync("purple-monkey-dinosaur",10)
+ 
   },
   user2RandomID: {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "dishwasher-funk",
+    password: bcrypt.hashSync("dishwasher-funk",10)
   }
   
 };
@@ -76,8 +79,11 @@ function getUserByEmail(emailFromPost){
 function getUserByEmailByPassword(emailFromPost,passwordFromPost){
   
   for( let user in users ) {
-      if ((passwordFromPost === users[user]["password"] )&& (emailFromPost === users[user]["email"])){
-        return user
+   
+    if (bcrypt.compareSync(passwordFromPost, users[user]["password"])&& (emailFromPost === users[user]["email"])){
+    
+    return user
+
       }
   }
   return null;
@@ -125,7 +131,8 @@ app.post("/register",(req,res) => {
   
   const id = generateRandomString();
   const email = req.body.email;
-  const password = req.body.password;
+  const password =bcrypt.hashSync(req.body.password,10);
+ 
   
   const newUser ={
     id : id,
@@ -193,6 +200,7 @@ app.post("/login",(req,res) => {
   let userFoundByEmailPassword = getUserByEmailByPassword(req.body.email,req.body.password)
   
   if(userFoundByEmailPassword ){
+    console.log("login pass check")
     res.cookie("user_id",users[userFoundByEmailPassword]["id"])
     res.redirect("/urls");
   }
@@ -325,7 +333,7 @@ app.get("/u/:id", (req, res) => {
 ///Route to diplay a single URL and its shortened form 
 /////////////////////////////////////////////////////////////
 app.get("/urls/:id", (req, res) => {
-  if(!req.cookies["user_id"]) {
+  if(req.cookies["user_id"]) {
     const templateVars = { user: users[req.cookies["user_id"]],id: req.params.id, longURL:urlDatabase[req.params.id].longURL };
     res.render("urls_show", templateVars);
 
