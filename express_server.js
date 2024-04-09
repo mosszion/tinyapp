@@ -15,10 +15,21 @@ app.use(cookieParser());
 ///OUR URL Temporary Database
 /////////////////////////////////////////////////////////////
 
+// const urlDatabase = {
+//   b2xVn2: "http://www.lighthouselabs.ca",
+//   "9sm5xK": "http://www.google.com",
+// };
 const urlDatabase = {
-  b2xVn2: "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com",
+  b6UTxQ: {
+    longURL: "https://www.tsn.ca",
+    userID: "aJ48lW",
+  },
+  i3BoGr: {
+    longURL: "https://www.google.ca",
+    userID: "aJ48lW",
+  },
 };
+
 
 /////////////////////////////////////////////////////////////
 ///OUR URL Temporary USERS Database
@@ -72,14 +83,18 @@ function getUserByEmailByPassword(emailFromPost,passwordFromPost){
   return null;
 }
 
+// function which returns URLS where userID is equal to currently logged user
+
+
+
 
 /////////////////////////////////////////////////////////////
 ///Get route renders Login page
 /////////////////////////////////////////////////////////////
 
 app.get("/login",(req,res) => {
-  
   if(!req.cookies.user_id) {
+    
     res.render("login",{user: users[req.cookies["user_id"]] });
   }
   
@@ -124,7 +139,7 @@ app.post("/register",(req,res) => {
   
   
   
-  res.redirect("/urls");
+  res.redirect("/login");
   
 });
 
@@ -135,13 +150,15 @@ app.post("/register",(req,res) => {
 app.get("/register",(req,res) => {
 
 
-     if (!req.cookies.user_id) {
-   
+     if (!req.cookies.user_id) { 
+      console.log(users)
+     
       res.render("register",{user: users[req.cookies["user_id"]]})
-
-        return; // Add return to exit the function after redirecting
-      } else{
-
+      
+      return; // Add return to exit the function after redirecting
+    } else{
+      
+      console.log("hi 2")
         // If the user is already logged in, redirect to /urls
         res.redirect("/urls");
         
@@ -200,7 +217,7 @@ app.post("/urls/:id",(req,res) => {
  
   const id = req.params.id;
   const longURL = req.body.longURL
-  urlDatabase[id] = longURL;
+  urlDatabase[id].longURL = longURL;
  
  res.redirect(`/urls`);
  }
@@ -223,13 +240,25 @@ app.post("/urls/:id/delete",(req,res) => {
 ///Route to diplay all our urls 
 /////////////////////////////////////////////////////////////
 app.get("/urls",(req,res) => {
-  
+  if (req.cookies["user_id"]) {
+    console.log(urlDatabase)
+    const ids = Object.keys(urlDatabase)
+    console.log(ids);
+    for (let uid of ids ) {
+      if(urlDatabase[uid].userID === req.cookies["user_id"]){
 
-  
-  const templateVars = {user: users[req.cookies["user_id"]],urls: urlDatabase};
-  res.render("urls_index",templateVars);
-  
-  
+        const templateVars = {user: users[req.cookies["user_id"]],urls: urlDatabase, uid: urlDatabase[uid].userID  };
+        return res.render("urls_index",templateVars);
+        
+      }
+
+    }
+    res.send("No url data for this user!!")
+
+  }
+
+  res.send("<html><body>Login or Register first!!!!</body></html>\n")
+
   
 });
 
@@ -257,9 +286,15 @@ app.post("/urls", (req, res) => {
   if(req.cookies["user_id"]){
 
       const id = generateRandomString();
-      const longUrl = req.body.longURL
-      urlDatabase[id] =longUrl;
 
+      const longUrl = req.body.longURL
+      console.log(longUrl);
+      
+      urlDatabase[id] ={
+        longURL : longUrl,
+        userID : req.cookies["user_id"]
+      }
+     
       res.redirect(`/urls/${id}`);
   }
   res.send("You should login to make a post.")
@@ -273,7 +308,7 @@ app.get("/u/:id", (req, res) => {
   const idOfUrlDatabase = Object.keys(urlDatabase)
   for(let id of idOfUrlDatabase) {
     if(req.params.id === id) {
-      const longURL = urlDatabase[req.params.id];
+      const longURL = urlDatabase[req.params.id].longURL;
       
       res.redirect(longURL);
 
@@ -290,8 +325,12 @@ app.get("/u/:id", (req, res) => {
 ///Route to diplay a single URL and its shortened form 
 /////////////////////////////////////////////////////////////
 app.get("/urls/:id", (req, res) => {
-  const templateVars = { user: users[req.cookies["user_id"]],id: req.params.id, longURL:urlDatabase[req.params.id] };
-  res.render("urls_show", templateVars);
+  if(!req.cookies["user_id"]) {
+    const templateVars = { user: users[req.cookies["user_id"]],id: req.params.id, longURL:urlDatabase[req.params.id].longURL };
+    res.render("urls_show", templateVars);
+
+  }
+  res.send("LOGIN TO GET ACCESS TO THIS PAGE")
 });
 
 
