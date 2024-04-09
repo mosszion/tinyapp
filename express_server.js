@@ -78,10 +78,17 @@ function getUserByEmailByPassword(emailFromPost,passwordFromPost){
 /////////////////////////////////////////////////////////////
 
 app.get("/login",(req,res) => {
-  res.cookie("user_id");
-  res.render("login",{user: users[req.cookies["user_id"]] });
+  
+  if(!req.cookies.user_id) {
+    res.render("login",{user: users[req.cookies["user_id"]] });
+  }
+  
+  return res.redirect("/urls")
+
+  
   
 });
+
 //////////////////////////////////////////////////////////////////////////////////////
 ///POST route submits Registration values
 ///Implemented logic which checks empty strings  and if found returns 400 status code
@@ -90,33 +97,33 @@ app.get("/login",(req,res) => {
 
 app.post("/register",(req,res) => {
   
-
+  
   if(req.body.email === "" || req.body.password === ""){
     res.status(400).send("Please fill the email and password boxes!!!")
     return;
   }
   if(getUserByEmail(req.body.email)) {
-
+    
     res.status(400).send("This Email already registered for another user.Please enter different email !!!!!!!")
     return;
   }
-
+  
   const id = generateRandomString();
   const email = req.body.email;
   const password = req.body.password;
   
   const newUser ={
-      id : id,
+    id : id,
     email: email,
     password: password
   }
-
-  users[id] = newUser;
-
-  res.cookie("user_id",`${id}`);
-
   
-
+  users[id] = newUser;
+  
+  res.cookie("user_id",`${id}`);
+  
+  
+  
   res.redirect("/urls");
   
 });
@@ -127,17 +134,31 @@ app.post("/register",(req,res) => {
 
 app.get("/register",(req,res) => {
 
-  res.render("register",{user: users[req.cookies["user_id"]]});
+
+     if (!req.cookies.user_id) {
+   
+      res.render("register",{user: users[req.cookies["user_id"]]})
+
+        return; // Add return to exit the function after redirecting
+      } else{
+
+        // If the user is already logged in, redirect to /urls
+        res.redirect("/urls");
+        
+      }
+  });
+
   
-});
+
+
 /////////////////////////////////////////////////////////////
 ///POST route for LOGOUT 
 /////////////////////////////////////////////////////////////
 
 app.post("/logout",(req,res) => {
-
+  
   res.clearCookie("user_id")
-
+  
   res.redirect("/login");
   
 });
@@ -150,7 +171,7 @@ app.post("/login",(req,res) => {
     res.status(400).send("Please fill the email and password boxes!!!")
     return;
   }
-
+  
   
   let userFoundByEmailPassword = getUserByEmailByPassword(req.body.email,req.body.password)
   
@@ -158,7 +179,7 @@ app.post("/login",(req,res) => {
     res.cookie("user_id",users[userFoundByEmailPassword]["id"])
     res.redirect("/urls");
   }
-
+  
   res.status(400).send("Loggin attempt was unsuccessful");
   
 });
@@ -171,11 +192,44 @@ app.get("/",(req,res) => {
   
 });
 /////////////////////////////////////////////////////////////
+/// Post Route that edits URL resource
+/////////////////////////////////////////////////////////////
+app.post("/urls/:id",(req,res) => {
+  
+ if (req.cookies.user_id) {
+ 
+  const id = req.params.id;
+  const longURL = req.body.longURL
+  urlDatabase[id] = longURL;
+ 
+ res.redirect(`/urls`);
+ }
+ res.send ("Login to make changes")
+});
+/////////////////////////////////////////////////////////////
+/// Post Route that removes URL resource
+/////////////////////////////////////////////////////////////
+app.post("/urls/:id/delete",(req,res) => {
+  if (req.cookies.user_id) {
+
+    const id = req.params.id;
+    delete urlDatabase[id];
+    
+    res.redirect("/urls");
+  }
+  res.send ("Login to make changes")
+});
+/////////////////////////////////////////////////////////////
 ///Route to diplay all our urls 
 /////////////////////////////////////////////////////////////
 app.get("/urls",(req,res) => {
+  
+
+  
   const templateVars = {user: users[req.cookies["user_id"]],urls: urlDatabase};
   res.render("urls_index",templateVars);
+  
+  
   
 });
 
@@ -183,47 +237,51 @@ app.get("/urls",(req,res) => {
 ///Get Route to show the new Form
 /////////////////////////////////////////////////////////////
 app.get("/urls/new", (req, res) => {
-  const templateVars = {user: users[req.cookies["user_id"]]}
-  res.render("urls_new",templateVars);
+  if(req.cookies.user_id){
+  
+    const templateVars = {user: users[req.cookies["user_id"]]}
+    res.render("urls_new",templateVars);
+    
+  } else {
+
+    res.redirect("/login")
+  }
+  
 });
 
-/////////////////////////////////////////////////////////////
-/// Post Route that edits URL resource
-/////////////////////////////////////////////////////////////
-app.post("/urls/:id",(req,res) => {
-  const id = req.params.id;
-  const longURL = req.body.longURL
-  urlDatabase[id] = longURL;
- 
- res.redirect(`/urls`);
-});
-/////////////////////////////////////////////////////////////
-/// Post Route that removes URL resource
-/////////////////////////////////////////////////////////////
-app.post("/urls/:id/delete",(req,res) => {
-  const id = req.params.id;
-  delete urlDatabase[id];
- 
- res.redirect("/urls");
-});
 /////////////////////////////////////////////////////////////
 /// POST Route to recieve the Form Submission
 /////////////////////////////////////////////////////////////
 
 app.post("/urls", (req, res) => {
-  const id = generateRandomString();
-  const longUrl = req.body.longURL
-  urlDatabase[id] =longUrl;
+  if(req.cookies["user_id"]){
 
-  res.redirect(`/urls/${id}`);
+      const id = generateRandomString();
+      const longUrl = req.body.longURL
+      urlDatabase[id] =longUrl;
+
+      res.redirect(`/urls/${id}`);
+  }
+  res.send("You should login to make a post.")
+  
 });
 /////////////////////////////////////////////////////////////
 /// Redirect Short URLs
 /////////////////////////////////////////////////////////////
 
 app.get("/u/:id", (req, res) => {
-  const longURL = urlDatabase[req.params.id];
-  res.redirect(longURL);
+  const idOfUrlDatabase = Object.keys(urlDatabase)
+  for(let id of idOfUrlDatabase) {
+    if(req.params.id === id) {
+      const longURL = urlDatabase[req.params.id];
+      
+      res.redirect(longURL);
+
+    }
+  } 
+  res.send("This Id does not exist!!!!!")
+
+  
 });
 
 
