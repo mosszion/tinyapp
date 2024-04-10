@@ -1,11 +1,13 @@
 
+const bcrypt = require("bcryptjs");
+
 // Function which returns user if email is registered to users
 
-function getUserByEmail(email,Database){
+function getUserByEmail(email,userDatabase){
   
   for( let user in userDatabase ) {
-    if(email === Database[user]["email"]) {
-        return Database[user]
+    if(email === userDatabase[user]["email"]) {
+        return userDatabase[user]
     }
   }
   return null;
@@ -14,7 +16,7 @@ function getUserByEmail(email,Database){
 }
 
 //function which checks given email and password if correct and found in database
-function getUserByEmailByPassword(emailFromPost,passwordFromPost){
+function getUserByEmailByPassword(emailFromPost,passwordFromPost,users){
   
   for( let user in users ) {
    
