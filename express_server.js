@@ -5,16 +5,19 @@ const express = require("express")
 const cookieSession = require("cookie-session");
 const bcrypt = require("bcryptjs");
 
+const getUserByEmail = require("./helpers")
+
 
 const app = express();
 const PORT = 8080;
 
 app.set("view engine", "ejs")
 app.use(express.urlencoded({extended: true}));
+
 app.use(cookieSession({
 
     name: 'session',
-    keys: ["halewleoweso"],
+    keys: ["halewleoweso"]
 
 }));
 
@@ -70,15 +73,15 @@ function generateRandomString() {
 
 // Function which returns true if email is registered to users
 
-function getUserByEmail(emailFromPost){
+// function getUserByEmail(emailFromPost,users){
   
-  for( let user in users ) {
-    if(emailFromPost === users[user]["email"]) {
-        return user
-    }
-  }
-  return null;
-}
+//   for( let user in users ) {
+//     if(emailFromPost === users[user]["email"]) {
+//         return user
+//     }
+//   }
+//   return null;
+// }
 // Function which returns true if email is registered to users
 
 function getUserByEmailByPassword(emailFromPost,passwordFromPost){
@@ -206,9 +209,8 @@ app.post("/login",(req,res) => {
   
   if(userFoundByEmailPassword ){
     console.log("login pass check")
-    // res.session["user_id"]
-    // res.session[users[userFoundByEmailPassword]["id"]]
-    req.session.user_id = userFoundByEmailPassword.id;
+  
+    req.session.user_id = users[userFoundByEmailPassword]["id"];
     console.log("login pass check 2")
     res.redirect("/urls");
   }
