@@ -5,9 +5,14 @@ const express = require("express")
 const cookieSession = require("cookie-session");
 const bcrypt = require("bcryptjs");
 
-const getUserByEmail = require("./helpers")
+// imports aiding functions from helpers.js
+
+const {getUserByEmail} = require("./helpers")
+const {getUserByEmailByPassword} = require("./helpers")
+const {generateRandomString} = require("./helpers")
 
 
+// apps for express
 const app = express();
 const PORT = 8080;
 
@@ -59,45 +64,6 @@ const users = {
   }
   
 };
-
-
-/////////////////////////////////////////////////////////////
-/// Aiding Functions
-/////////////////////////////////////////////////////////////
-/// Function which generates random Id
-function generateRandomString() {
-  const randomid = Math.random().toString(36).substring(2, 8); //gets randomly generated 6 characters and assign it to randomID
-  return randomid; //
-  
-};
-
-// Function which returns true if email is registered to users
-
-// function getUserByEmail(emailFromPost,users){
-  
-//   for( let user in users ) {
-//     if(emailFromPost === users[user]["email"]) {
-//         return user
-//     }
-//   }
-//   return null;
-// }
-// Function which returns true if email is registered to users
-
-function getUserByEmailByPassword(emailFromPost,passwordFromPost){
-  
-  for( let user in users ) {
-   
-    if (bcrypt.compareSync(passwordFromPost, users[user]["password"])&& (emailFromPost === users[user]["email"])){
-    
-    return user
-
-      }
-  }
-  return null;
-}
-
-// function which returns URLS where userID is equal to currently logged user
 
 
 
