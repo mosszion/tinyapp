@@ -10,7 +10,7 @@ function getUserByEmail(email,userDatabase){
         return userDatabase[user]
     }
   }
-  return null;
+  return undefined;
 
 
 }

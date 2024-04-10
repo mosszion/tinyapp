@@ -28,6 +28,6 @@ describe('getUserByEmail', function() {
     
     
 
-    assert.equal(user, null);
+    assert.equal(user, undefined);
   });
 });
