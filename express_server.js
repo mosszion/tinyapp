@@ -7,9 +7,9 @@ const bcrypt = require("bcryptjs");
 
 // imports aiding functions from helpers.js
 
-const {getUserByEmail} = require("./helpers")
-const {getUserByEmailByPassword} = require("./helpers")
-const {generateRandomString} = require("./helpers")
+const {getUserByEmail,
+  getUserByEmailByPassword,
+  generateRandomString } = require("./helpers")
 
 
 // apps for express
@@ -171,7 +171,7 @@ app.post("/login",(req,res) => {
   }
   
   
-  let userFoundByEmailPassword = getUserByEmailByPassword(req.body.email,req.body.password)
+  let userFoundByEmailPassword = getUserByEmailByPassword(req.body.email,req.body.password,users)
   
   if(userFoundByEmailPassword ){
     console.log("login pass check")
