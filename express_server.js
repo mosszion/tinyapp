@@ -17,7 +17,8 @@ const app = express();
 const PORT = 8080;
 
 app.set("view engine", "ejs")
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({extended: false}));
+app.use(express.json());
 
 app.use(cookieSession({
 
@@ -30,10 +31,7 @@ app.use(cookieSession({
 ///OUR URL Temporary Database
 /////////////////////////////////////////////////////////////
 
-// const urlDatabase = {
-//   b2xVn2: "http://www.lighthouselabs.ca",
-//   "9sm5xK": "http://www.google.com",
-// };
+
 const urlDatabase = {
   b6UTxQ: {
     longURL: "https://www.tsn.ca",
@@ -189,8 +187,11 @@ app.post("/login",(req,res) => {
 /////////////////////////////////////////////////////////////
 
 app.get("/",(req,res) => {
-  res.send("Hello!!");
-  
+  if(req.session.user_id){
+
+    res.send("Hello!!");
+  }
+  res.redirect("/login")
 });
 /////////////////////////////////////////////////////////////
 /// Post Route that edits URL resource
@@ -330,6 +331,7 @@ app.get("/urls.json", (req,res) => {
 /// Sending HTML in a route
 /////////////////////////////////////////////////////////////
 app.get("/hello", (req,res) => {
+  
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 })
 
