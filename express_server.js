@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////
 ///Setup files and dependancies plus libraries
 /////////////////////////////////////////////////////////////
-const express = require("express")
+const express = require("express");
 const cookieSession = require("cookie-session");
 const bcrypt = require("bcryptjs");
 
@@ -9,21 +9,21 @@ const bcrypt = require("bcryptjs");
 
 const {getUserByEmail,
   getUserByEmailByPassword,
-  generateRandomString } = require("./helpers")
+  generateRandomString } = require("./helpers");
 
 
 // apps for express
 const app = express();
 const PORT = 8080;
 
-app.set("view engine", "ejs")
+app.set("view engine", "ejs");
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 
 app.use(cookieSession({
 
-    name: 'session',
-    keys: ["halewleoweso"]
+  name: 'session',
+  keys: ["halewleoweso"]
 
 }));
 
@@ -71,12 +71,12 @@ const users = {
 /////////////////////////////////////////////////////////////
 
 app.get("/login",(req,res) => {
-  if(!req.session.user_id) {
+  if (!req.session.user_id) {
     
     res.render("login",{user: users[req.session["user_id"]] });
   }
   
-  return res.redirect("/urls")
+  return res.redirect("/urls");
 
   
   
@@ -91,30 +91,30 @@ app.get("/login",(req,res) => {
 app.post("/register",(req,res) => {
   
   
-  if(req.body.email === "" || req.body.password === ""){
-    res.status(400).send("Please fill the email and password boxes!!!")
+  if (req.body.email === "" || req.body.password === "") {
+    res.status(400).send("Please fill the email and password boxes!!!");
     return;
   }
-  if(getUserByEmail(req.body.email)) {
+  if (getUserByEmail(req.body.email)) {
     
-    res.status(400).send("This Email already registered for another user.Please enter different email !!!!!!!")
+    res.status(400).send("This Email already registered for another user.Please enter different email !!!!!!!");
     return;
   }
   
   const id = generateRandomString();
   const email = req.body.email;
-  const password =bcrypt.hashSync(req.body.password,10);
+  const password = bcrypt.hashSync(req.body.password,10);
  
   
-  const newUser ={
+  const newUser = {
     id : id,
     email: email,
     password: password
-  }
+  };
   
   users[id] = newUser;
   
-  req.session.user_id =`${id}`;
+  req.session.user_id = `${id}`;
   
   
   
@@ -129,53 +129,52 @@ app.post("/register",(req,res) => {
 app.get("/register",(req,res) => {
 
 
-     if (!req.session.user_id) { 
-      console.log(users)
+  if (!req.session.user_id) {
+    console.log(users);
      
-      res.render("register",{user: users[req.session["user_id"]]})
+    res.render("register",{user: users[req.session["user_id"]]});
       
-      return; // Add return to exit the function after redirecting
-    } else{
+    return; // Add return to exit the function after redirecting
+  } else {
       
-      console.log("hi 2")
-        // If the user is already logged in, redirect to /urls
-        res.redirect("/urls");
+    // If the user is already logged in, redirect to /urls
+    res.redirect("/urls");
         
-      }
-  });
+  }
+});
 
   
 
 
 /////////////////////////////////////////////////////////////
-///POST route for LOGOUT 
+///POST route for LOGOUT
 /////////////////////////////////////////////////////////////
 
 app.post("/logout",(req,res) => {
   
-  req.session = null
+  req.session = null;
   
   res.redirect("/login");
   
 });
 /////////////////////////////////////////////////////////////
-///POST route for Login  
+///POST route for Login
 /////////////////////////////////////////////////////////////
 
 app.post("/login",(req,res) => {
-  if(req.body.email === "" || req.body.password === ""){
-    res.status(400).send("Please fill the email and password boxes!!!")
+  if (req.body.email === "" || req.body.password === "") {
+    res.status(400).send("Please fill the email and password boxes!!!");
     return;
   }
   
   
-  let userFoundByEmailPassword = getUserByEmailByPassword(req.body.email,req.body.password,users)
+  let userFoundByEmailPassword = getUserByEmailByPassword(req.body.email,req.body.password,users);
   
-  if(userFoundByEmailPassword ){
-    console.log("login pass check")
+  if (userFoundByEmailPassword) {
+    console.log("login pass check");
   
     req.session.user_id = users[userFoundByEmailPassword]["id"];
-    console.log("login pass check 2")
+    console.log("login pass check 2");
     res.redirect("/urls");
   }
   
@@ -183,30 +182,30 @@ app.post("/login",(req,res) => {
   
 });
 /////////////////////////////////////////////////////////////
-///First route Hello Page 
+///First route Hello Page
 /////////////////////////////////////////////////////////////
 
 app.get("/",(req,res) => {
-  if(req.session.user_id){
+  if (req.session.user_id) {
 
     res.send("Hello!!");
   }
-  res.redirect("/login")
+  res.redirect("/login");
 });
 /////////////////////////////////////////////////////////////
 /// Post Route that edits URL resource
 /////////////////////////////////////////////////////////////
 app.post("/urls/:id",(req,res) => {
   
- if (req.session.user_id) {
+  if (req.session.user_id) {
  
-  const id = req.params.id;
-  const longURL = req.body.longURL
-  urlDatabase[id].longURL = longURL;
+    const id = req.params.id;
+    const longURL = req.body.longURL;
+    urlDatabase[id].longURL = longURL;
  
- res.redirect(`/urls`);
- }
- res.send ("Login to make changes")
+    res.redirect(`/urls`);
+  }
+  res.send("Login to make changes");
 });
 /////////////////////////////////////////////////////////////
 /// Post Route that removes URL resource
@@ -219,18 +218,18 @@ app.post("/urls/:id/delete",(req,res) => {
     
     res.redirect("/urls");
   }
-  res.send ("Login to make changes")
+  res.send("Login to make changes");
 });
 /////////////////////////////////////////////////////////////
-///Route to diplay all our urls 
+///Route to diplay all our urls
 /////////////////////////////////////////////////////////////
 app.get("/urls",(req,res) => {
   if (req.session["user_id"]) {
-    console.log(urlDatabase)
-    const ids = Object.keys(urlDatabase)
-    console.log(ids);
-    for (let uid of ids ) {
-      if(urlDatabase[uid].userID === req.session["user_id"]){
+    console.log(urlDatabase);
+    const ids = Object.keys(urlDatabase);
+  
+    for (let uid of ids) {
+      if (urlDatabase[uid].userID === req.session["user_id"]) {
 
         const templateVars = {user: users[req.session["user_id"]],urls: urlDatabase, uid: urlDatabase[uid].userID  };
         return res.render("urls_index",templateVars);
@@ -238,11 +237,11 @@ app.get("/urls",(req,res) => {
       }
 
     }
-    res.send("No url data for this user!!")
+    res.send("No url data for this user!!");
 
   }
 
-  res.send("<html><body>Login or Register first!!!!</body></html>\n")
+  res.send("<html><body>Login or Register first!!!!</body></html>\n");
 
   
 });
@@ -251,14 +250,14 @@ app.get("/urls",(req,res) => {
 ///Get Route to show the new Form
 /////////////////////////////////////////////////////////////
 app.get("/urls/new", (req, res) => {
-  if(req.session.user_id){
+  if (req.session.user_id) {
   
-    const templateVars = {user: users[req.session["user_id"]]}
+    const templateVars = {user: users[req.session["user_id"]]};
     res.render("urls_new",templateVars);
     
   } else {
 
-    res.redirect("/login")
+    res.redirect("/login");
   }
   
 });
@@ -268,21 +267,21 @@ app.get("/urls/new", (req, res) => {
 /////////////////////////////////////////////////////////////
 
 app.post("/urls", (req, res) => {
-  if(req.session["user_id"]){
+  if (req.session["user_id"]) {
 
-      const id = generateRandomString();
+    const id = generateRandomString();
 
-      const longUrl = req.body.longURL
-      console.log(longUrl);
+    const longUrl = req.body.longURL;
+    console.log(longUrl);
       
-      urlDatabase[id] ={
-        longURL : longUrl,
-        userID : req.session["user_id"]
-      }
+    urlDatabase[id] = {
+      longURL : longUrl,
+      userID : req.session["user_id"]
+    };
      
-      res.redirect(`/urls/${id}`);
+    res.redirect(`/urls/${id}`);
   }
-  res.send("You should login to make a post.")
+  res.send("You should login to make a post.");
   
 });
 /////////////////////////////////////////////////////////////
@@ -290,16 +289,16 @@ app.post("/urls", (req, res) => {
 /////////////////////////////////////////////////////////////
 
 app.get("/u/:id", (req, res) => {
-  const idOfUrlDatabase = Object.keys(urlDatabase)
-  for(let id of idOfUrlDatabase) {
-    if(req.params.id === id) {
+  const idOfUrlDatabase = Object.keys(urlDatabase);
+  for (let id of idOfUrlDatabase) {
+    if (req.params.id === id) {
       const longURL = urlDatabase[req.params.id].longURL;
       
       res.redirect(longURL);
 
     }
-  } 
-  res.send("This Id does not exist!!!!!")
+  }
+  res.send("This Id does not exist!!!!!");
 
   
 });
@@ -307,15 +306,15 @@ app.get("/u/:id", (req, res) => {
 
 
 /////////////////////////////////////////////////////////////
-///Route to diplay a single URL and its shortened form 
+///Route to diplay a single URL and its shortened form
 /////////////////////////////////////////////////////////////
 app.get("/urls/:id", (req, res) => {
-  if(req.session["user_id"]) {
+  if (req.session["user_id"]) {
     const templateVars = { user: users[req.session["user_id"]],id: req.params.id, longURL:urlDatabase[req.params.id].longURL };
     res.render("urls_show", templateVars);
 
   }
-  res.send("LOGIN TO GET ACCESS TO THIS PAGE")
+  res.send("LOGIN TO GET ACCESS TO THIS PAGE");
 });
 
 
@@ -325,7 +324,7 @@ app.get("/urls/:id", (req, res) => {
 
 app.get("/urls.json", (req,res) => {
   res.json(urlDatabase);
-})
+});
 
 /////////////////////////////////////////////////////////////
 /// Sending HTML in a route
@@ -333,7 +332,7 @@ app.get("/urls.json", (req,res) => {
 app.get("/hello", (req,res) => {
   
   res.send("<html><body>Hello <b>World</b></body></html>\n");
-})
+});
 
 /////////////////////////////////////////////////////////////
 /// App listening at port 8080!
