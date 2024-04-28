@@ -176,6 +176,7 @@ app.post("/login",(req,res) => {
     req.session.user_id = users[userFoundByEmailPassword]["id"];
     console.log("login pass check 2");
     res.redirect("/urls");
+    return;
   }
   
   res.status(400).send("Loggin attempt was unsuccessful");
