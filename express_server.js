@@ -227,19 +227,9 @@ app.post("/urls/:id/delete",(req,res) => {
 app.get("/urls",(req,res) => {
   if (req.session["user_id"]) {
     console.log(urlDatabase);
-    const ids = Object.keys(urlDatabase);
-  
-    for (let uid of ids) {
-      if (urlDatabase[uid].userID === req.session["user_id"]) {
 
-        const templateVars = {user: users[req.session["user_id"]],urls: urlDatabase, uid: urlDatabase[uid].userID  };
+        const templateVars = {user: users[req.session["user_id"]], urls: urlDatabase, uid: req.session["user_id"] };
         return res.render("urls_index",templateVars);
-        
-      }
-
-    }
-    return res.send("No url data for this user!!");
-
   }
 
   return res.send("<html><body>Login or Register first!!!!</body></html>\n");
@@ -314,17 +304,17 @@ app.get("/urls/:id", (req, res) => {
     const ids = Object.keys(urlDatabase);
   
     for (let uid of ids) {
-      if (urlDatabase[uid].userID === req.session["user_id"]) {
+      if (urlDatabase[uid].userID === req.session["user_id"] && uid === req.params.id) {
 
         const templateVars = { user: users[req.session["user_id"]],id: req.params.id, longURL:urlDatabase[req.params.id].longURL };
         return res.render("urls_show", templateVars);
         
         
-      } else {
-        return res.send("<html><body><h1>Unauthorized Access Attempt!!</h1> <p>This URL ID belongs to another User.</p></body></html>\n")
-      }
-
-  }
+      } 
+      
+      
+    }
+    return res.send("<html><body><h1>Unauthorized Access Attempt!!</h1> <p>This URL ID belongs to another User.</p></body></html>\n")
 }
   return res.send("LOGIN TO GET ACCESS TO THIS PAGE");
 });
