@@ -73,7 +73,7 @@ const users = {
 app.get("/login",(req,res) => {
   if (!req.session.user_id) {
     
-    res.render("login",{user: users[req.session["user_id"]] });
+    return res.render("login",{user: users[req.session["user_id"]] });
   }
   
   return res.redirect("/urls");
@@ -118,7 +118,7 @@ app.post("/register",(req,res) => {
   
   
   
-  res.redirect("/login");
+  return res.redirect("/login");
   
 });
 
@@ -132,13 +132,13 @@ app.get("/register",(req,res) => {
   if (!req.session.user_id) {
     console.log(users);
      
-    res.render("register",{user: users[req.session["user_id"]]});
+    return res.render("register",{user: users[req.session["user_id"]]});
       
     return; // Add return to exit the function after redirecting
   } else {
       
     // If the user is already logged in, redirect to /urls
-    res.redirect("/urls");
+    return res.redirect("/urls");
         
   }
 });
@@ -154,7 +154,7 @@ app.post("/logout",(req,res) => {
   
   req.session = null;
   
-  res.redirect("/login");
+  return res.redirect("/login");
   
 });
 /////////////////////////////////////////////////////////////
@@ -189,9 +189,9 @@ app.post("/login",(req,res) => {
 app.get("/",(req,res) => {
   if (req.session.user_id) {
 
-    res.send("Hello!!");
+    return res.send("Hello!!");
   }
-  res.redirect("/login");
+  return res.redirect("/login");
 });
 /////////////////////////////////////////////////////////////
 /// Post Route that edits URL resource
@@ -204,9 +204,9 @@ app.post("/urls/:id",(req,res) => {
     const longURL = req.body.longURL;
     urlDatabase[id].longURL = longURL;
  
-    res.redirect(`/urls`);
+    return res.redirect(`/urls`);
   }
-  res.send("Login to make changes");
+  return res.send("Login to make changes");
 });
 /////////////////////////////////////////////////////////////
 /// Post Route that removes URL resource
@@ -217,9 +217,9 @@ app.post("/urls/:id/delete",(req,res) => {
     const id = req.params.id;
     delete urlDatabase[id];
     
-    res.redirect("/urls");
+    return res.redirect("/urls");
   }
-  res.send("Login to make changes");
+  return res.send("Login to make changes");
 });
 /////////////////////////////////////////////////////////////
 ///Route to diplay all our urls
@@ -227,22 +227,12 @@ app.post("/urls/:id/delete",(req,res) => {
 app.get("/urls",(req,res) => {
   if (req.session["user_id"]) {
     console.log(urlDatabase);
-    const ids = Object.keys(urlDatabase);
-  
-    for (let uid of ids) {
-      if (urlDatabase[uid].userID === req.session["user_id"]) {
 
-        const templateVars = {user: users[req.session["user_id"]],urls: urlDatabase, uid: urlDatabase[uid].userID  };
+        const templateVars = {user: users[req.session["user_id"]], urls: urlDatabase, uid: req.session["user_id"] };
         return res.render("urls_index",templateVars);
-        
-      }
-
-    }
-    res.send("No url data for this user!!");
-
   }
 
-  res.send("<html><body>Login or Register first!!!!</body></html>\n");
+  return res.send("<html><body>Login or Register first!!!!</body></html>\n");
 
   
 });
@@ -280,9 +270,9 @@ app.post("/urls", (req, res) => {
       userID : req.session["user_id"]
     };
      
-    res.redirect(`/urls/${id}`);
+    return res.redirect(`/urls/${id}`);
   }
-  res.send("You should login to make a post.");
+  return res.send("You should login to make a post.");
   
 });
 /////////////////////////////////////////////////////////////
@@ -295,11 +285,11 @@ app.get("/u/:id", (req, res) => {
     if (req.params.id === id) {
       const longURL = urlDatabase[req.params.id].longURL;
       
-      res.redirect(longURL);
+      return res.redirect(longURL);
 
     }
   }
-  res.send("This Id does not exist!!!!!");
+  return res.send("This Id does not exist!!!!!");
 
   
 });
@@ -311,11 +301,22 @@ app.get("/u/:id", (req, res) => {
 /////////////////////////////////////////////////////////////
 app.get("/urls/:id", (req, res) => {
   if (req.session["user_id"]) {
-    const templateVars = { user: users[req.session["user_id"]],id: req.params.id, longURL:urlDatabase[req.params.id].longURL };
-    res.render("urls_show", templateVars);
+    const ids = Object.keys(urlDatabase);
+  
+    for (let uid of ids) {
+      if (urlDatabase[uid].userID === req.session["user_id"] && uid === req.params.id) {
 
-  }
-  res.send("LOGIN TO GET ACCESS TO THIS PAGE");
+        const templateVars = { user: users[req.session["user_id"]],id: req.params.id, longURL:urlDatabase[req.params.id].longURL };
+        return res.render("urls_show", templateVars);
+        
+        
+      } 
+      
+      
+    }
+    return res.send("<html><body><h1>Unauthorized Access Attempt!!</h1> <p>This URL ID belongs to another User.</p></body></html>\n")
+}
+  return res.send("LOGIN TO GET ACCESS TO THIS PAGE");
 });
 
 
@@ -332,7 +333,7 @@ app.get("/urls.json", (req,res) => {
 /////////////////////////////////////////////////////////////
 app.get("/hello", (req,res) => {
   
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
+  return res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
 /////////////////////////////////////////////////////////////
